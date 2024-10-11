@@ -6,7 +6,7 @@ import java.io.File;
 public class ExtentionlessFileFilter extends FileFilter {
     @Override
     public boolean accept(File f) {
-        if (f.isDirectory()) return false;
+        if (f.isDirectory()) return true;
         return !f.getName().contains(".");
     }
 

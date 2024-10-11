@@ -213,9 +213,9 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
                     comboBoxUnit.getSelectedIndex() == 1 ? "K" :
                             comboBoxUnit.getSelectedIndex() == 2 ? "M" : "G";
 
-            StringBuilder cmd = new StringBuilder("./" + Main.getParserName() + " encode " + maxSize + unit + " " + outputFilePath);
+            StringBuilder cmd = new StringBuilder("./" + Main.getParserName() + " encode " + maxSize + unit + " \"" + outputFilePath + "\"");
             for (int i = 0; i < listModel.getSize(); i++) {
-                cmd.append(" ").append(listModel.getElementAt(i));
+                cmd.append(" \"").append(listModel.getElementAt(i)).append("\"");
             }
 
             ParserRunningUi parser = new ParserRunningUi(500, 500, this, false);

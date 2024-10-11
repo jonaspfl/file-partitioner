@@ -10,8 +10,8 @@ public class FontUtils {
 
     public static void setup() {
         try {
-            defaultFont = Font.createFont(Font.TRUETYPE_FONT, new File(ResourceManager.getDefaultFontResource().getFile()));
-            monoFont = Font.createFont(Font.TRUETYPE_FONT, new File(ResourceManager.getMonoFontResource().getFile()));
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT, ResourceManager.getDefaultFontResource().openStream());
+            monoFont = Font.createFont(Font.TRUETYPE_FONT, ResourceManager.getMonoFontResource().openStream());
         } catch (FontFormatException | IOException e) {
             defaultFont = new Font("Arial", Font.PLAIN, 20);
         }

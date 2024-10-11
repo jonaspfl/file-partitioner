@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/FilePartitioner_jar</output-path>
     <root id="archive" name="FilePartitioner.jar">
       <element id="module-output" name="FilePartitioner" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
     </root>
   </artifact>
 </component>
