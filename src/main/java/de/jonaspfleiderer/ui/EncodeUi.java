@@ -111,11 +111,10 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         int comboBoxHeight = 40;
         comboBoxUnit.setBounds(maxFileSizeLabelWidth + textFieldWidth, 148, comboBoxWidth, comboBoxHeight);
         comboBoxUnit.setFont(FontUtils.getNormalFont());
-        comboBoxUnit.addItem("B");
         comboBoxUnit.addItem("KiB");
         comboBoxUnit.addItem("MiB");
         comboBoxUnit.addItem("GiB");
-        comboBoxUnit.setSelectedIndex(2);
+        comboBoxUnit.setSelectedIndex(1);
         panel.add(comboBoxUnit);
 
         //  setup file chooser
@@ -209,9 +208,8 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
 
         if (e.getSource() == buttonStartEncoding) {
             int maxSize = textFieldMaxSize.getText().isEmpty() ? 0 : Integer.parseInt(textFieldMaxSize.getText());
-            String unit = maxSize == 0 ? "" : comboBoxUnit.getSelectedIndex() == 0 ? "B" :
-                    comboBoxUnit.getSelectedIndex() == 1 ? "K" :
-                            comboBoxUnit.getSelectedIndex() == 2 ? "M" : "G";
+            String unit = maxSize == 0 ? "" : comboBoxUnit.getSelectedIndex() == 0 ? "K" :
+                            comboBoxUnit.getSelectedIndex() == 1 ? "M" : "G";
 
             StringBuilder cmd = new StringBuilder("./" + Main.getParserName() + " encode " + maxSize + unit + " \"" + outputFilePath + "\"");
             for (int i = 0; i < listModel.getSize(); i++) {
