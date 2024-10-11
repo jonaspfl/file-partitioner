@@ -31,7 +31,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
     private final JButton buttonSelectOutput;
     private final JTextField textFieldMaxSize;
     private final JComboBox<String> comboBoxUnit;
-    private final JLabel labelOutputFile;
+    private final JTextArea textOutputFile;
 
     private String outputFilePath;
 
@@ -89,7 +89,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         int fileListHeight = (int) (0.5 * height);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fileList.setFont(FontUtils.getSmallFont());
-        fileList.setBounds(width / 2 - (fileListWidth / 2), 230, fileListWidth, fileListHeight);
+        fileList.setBounds(width / 2 - (fileListWidth / 2) - 5, 225, fileListWidth, fileListHeight);
         fileList.addListSelectionListener(this);
         JScrollPane scrollPane = new JScrollPane(fileList);
         scrollPane.setBounds(fileList.getBounds());
@@ -98,7 +98,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         //  setup textfield
         textFieldMaxSize = new JTextField();
         int textFieldWidth = 80;
-        int textFieldHeight = 30;
+        int textFieldHeight = 25;
         textFieldMaxSize.setBounds(maxFileSizeLabelWidth, 150, textFieldWidth, textFieldHeight);
         textFieldMaxSize.setFont(FontUtils.getNormalFont());
         textFieldMaxSize.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -108,8 +108,8 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         //  setup combobox
         comboBoxUnit = new JComboBox<>();
         int comboBoxWidth = 90;
-        int comboBoxHeight = 40;
-        comboBoxUnit.setBounds(maxFileSizeLabelWidth + textFieldWidth, 148, comboBoxWidth, comboBoxHeight);
+        int comboBoxHeight = 30;
+        comboBoxUnit.setBounds(maxFileSizeLabelWidth + textFieldWidth + 5, 148, comboBoxWidth, comboBoxHeight);
         comboBoxUnit.setFont(FontUtils.getNormalFont());
         comboBoxUnit.addItem("KiB");
         comboBoxUnit.addItem("MiB");
@@ -133,8 +133,8 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
 
         //  setup add file button
         buttonAddFile = new JButton("Add File");
-        int buttonWidth = 180;
-        int buttonHeight = 30;
+        int buttonWidth = 170;
+        int buttonHeight = 25;
         buttonAddFile.setBounds(width / 2 - (buttonWidth / 2), 195, buttonWidth, buttonHeight);
         buttonAddFile.setFont(FontUtils.getNormalFont());
         buttonAddFile.addActionListener(this);
@@ -142,7 +142,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
 
         //  setup remove selected button
         buttonRemoveSelected = new JButton("Remove Selected");
-        buttonRemoveSelected.setBounds(width / 2 - (buttonWidth / 2), 230 + fileListHeight + 5, buttonWidth, buttonHeight);
+        buttonRemoveSelected.setBounds(width / 2 - (buttonWidth / 2), 225 + fileListHeight + 5, buttonWidth, buttonHeight);
         buttonRemoveSelected.setFont(FontUtils.getNormalFont());
         buttonRemoveSelected.setEnabled(false);
         buttonRemoveSelected.addActionListener(this);
@@ -155,16 +155,20 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         buttonSelectOutput.addActionListener(this);
         panel.add(buttonSelectOutput);
 
-        //  setup output file label
-        labelOutputFile = new JLabel("");
-        labelOutputFile.setFont(FontUtils.getNormalFont());
-        labelOutputFile.setBounds(15, 230 + fileListHeight + 5 + buttonHeight * 2, width - 30, 20);
-        labelOutputFile.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(labelOutputFile);
+        //  setup output file text
+        textOutputFile = new JTextArea();
+        textOutputFile.setFont(FontUtils.getNormalFont());
+        textOutputFile.setBounds(5, 230 + fileListHeight + 10 + buttonHeight * 2, width - 25, 15);
+        textOutputFile.setEditable(false);
+        textOutputFile.setBackground(getBackground());
+        textOutputFile.setLineWrap(false);
+        JScrollPane scrollPaneLabel = new JScrollPane(textOutputFile);
+        scrollPaneLabel.setBounds(5, 230 + fileListHeight + 10 + buttonHeight * 2, width - 25, 40);
+        panel.add(scrollPaneLabel);
 
         //  setup start encoding button
         buttonStartEncoding = new JButton("Start Encoding");
-        buttonStartEncoding.setBounds(width / 2 - (buttonWidth / 2), 230 + fileListHeight + 5 + buttonHeight * 3, buttonWidth, buttonHeight);
+        buttonStartEncoding.setBounds(width / 2 - (buttonWidth / 2), 230 + fileListHeight + 30 + buttonHeight * 3, buttonWidth, buttonHeight);
         buttonStartEncoding.setFont(FontUtils.getNormalFont());
         buttonStartEncoding.setEnabled(false);
         buttonStartEncoding.addActionListener(this);
@@ -198,7 +202,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         if (e.getSource() == buttonSelectOutput) {
             if (fileChooserOut.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 outputFilePath = fileChooserOut.getSelectedFile().getAbsolutePath();
-                labelOutputFile.setText("Selected output: " + outputFilePath);
+                textOutputFile.setText(outputFilePath);
 
                 if (!listModel.isEmpty()) {
                     buttonStartEncoding.setEnabled(true);

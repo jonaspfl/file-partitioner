@@ -17,7 +17,7 @@ public class DecodeUi extends JFrame implements ActionListener {
     private final JButton buttonSelectFile;
     private final JButton buttonStartDecode;
     private final JFileChooser fileChooser;
-    private final JLabel fileLabel;
+    private final JTextArea textInputFile;
     private String filePath;
 
     public DecodeUi(int width, int height) {
@@ -61,27 +61,30 @@ public class DecodeUi extends JFrame implements ActionListener {
         panel.add(textPane);
 
         //  setup buttons
-        int buttonWidth = 150;
+        int buttonWidth = 140;
         int buttonHeight = 30;
         buttonSelectFile = new JButton("Select File");
         buttonSelectFile.setFont(FontUtils.getNormalFont());
-        buttonSelectFile.setBounds(width / 2 - buttonWidth / 2, 150, buttonWidth, buttonHeight);
+        buttonSelectFile.setBounds(width / 2 - buttonWidth / 2, 180, buttonWidth, buttonHeight);
         buttonSelectFile.addActionListener(this);
         panel.add(buttonSelectFile);
 
         buttonStartDecode = new JButton("Start Decode");
         buttonStartDecode.setFont(FontUtils.getNormalFont());
-        buttonStartDecode.setBounds(width / 2 - buttonWidth / 2, 180, buttonWidth, buttonHeight);
+        buttonStartDecode.setBounds(width / 2 - buttonWidth / 2, 215, buttonWidth, buttonHeight);
         buttonStartDecode.addActionListener(this);
         buttonStartDecode.setEnabled(false);
         panel.add(buttonStartDecode);
 
         //  setup file label
-        fileLabel = new JLabel();
-        fileLabel.setFont(FontUtils.getNormalFont());
-        fileLabel.setBounds(0, 130, width, 20);
-        fileLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(fileLabel);
+        textInputFile = new JTextArea();
+        textInputFile.setFont(FontUtils.getNormalFont());
+        textInputFile.setBounds(5, 130, width - 25, 15);
+        textInputFile.setEditable(false);
+        textInputFile.setBackground(getBackground());
+        JScrollPane scrollPane = new JScrollPane(textInputFile);
+        scrollPane.setBounds(5, 130, width - 25, 45);
+        panel.add(scrollPane);
 
         //  setup file chooser
         fileChooser = new JFileChooser();
@@ -98,7 +101,7 @@ public class DecodeUi extends JFrame implements ActionListener {
         if (e.getSource() == buttonSelectFile) {
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                fileLabel.setText("Selected file: " + filePath);
+                textInputFile.setText(filePath);
 
                 buttonStartDecode.setEnabled(true);
             }

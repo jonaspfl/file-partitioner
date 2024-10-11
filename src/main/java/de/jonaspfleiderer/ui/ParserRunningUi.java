@@ -51,13 +51,13 @@ public class ParserRunningUi extends JFrame implements ActionListener {
 
         //  setup font scale buttons
         buttonFontSmaller = new JButton("-");
-        buttonFontSmaller.setBounds(5, height - 65, 30, 30);
+        buttonFontSmaller.setBounds(5, height - 75, 30, 30);
         buttonFontSmaller.setFont(FontUtils.getNormalFont());
         buttonFontSmaller.addActionListener(this);
         panel.add(buttonFontSmaller);
 
         buttonFontBigger = new JButton("+");
-        buttonFontBigger.setBounds(45, height - 65, 30, 30);
+        buttonFontBigger.setBounds(45, height - 75, 30, 30);
         buttonFontBigger.setFont(FontUtils.getNormalFont());
         buttonFontBigger.addActionListener(this);
         panel.add(buttonFontBigger);
@@ -66,7 +66,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
         textArea = new JTextArea();
         textArea.setEditable(false);
         textArea.setLineWrap(false);
-        textArea.setBounds(5, 45, width - 10, height - 115);
+        textArea.setBounds(5, 45, width - 25, height - 125);
         textArea.setFont(FontUtils.getMonoSpaceFont());
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setBounds(textArea.getBounds());
@@ -76,7 +76,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
         int buttonWidth = 100;
         int buttonHeight = 30;
         buttonClose = new JButton("Close");
-        buttonClose.setBounds(width / 2 - buttonWidth / 2, height - 65, buttonWidth, buttonHeight);
+        buttonClose.setBounds(width / 2 - buttonWidth / 2, height - 75, buttonWidth, buttonHeight);
         buttonClose.setEnabled(false);
         buttonClose.setFont(FontUtils.getNormalFont());
         buttonClose.addActionListener(this);
@@ -101,7 +101,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                 }
                 buttonClose.setEnabled(true);
             } catch (IOException | InterruptedException e) {
-                ErrorUi ui = new ErrorUi(500, 500, e.getMessage());
+                ErrorUi ui = new ErrorUi(500, 250, e.getMessage());
                 ui.setVisible(true);
             }
         };
@@ -117,7 +117,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                     textArea.append(line + "\n");
                     textArea.setCaretPosition(textArea.getDocument().getLength());
                 } catch (IOException e) {
-                    ErrorUi ui = new ErrorUi(500, 500, e.getMessage());
+                    ErrorUi ui = new ErrorUi(500, 250, e.getMessage());
                     ui.setVisible(true);
                 }
             }
@@ -149,11 +149,11 @@ public class ParserRunningUi extends JFrame implements ActionListener {
             sc.close();
             log.delete();
             if (!moveFailed.isEmpty()) {
-                ErrorUi ui = new ErrorUi(500, 500, "Error moving files: " + moveFailed);
+                ErrorUi ui = new ErrorUi(500, 250, "Error moving files: " + moveFailed);
                 ui.setVisible(true);
             }
         } catch (FileNotFoundException e) {
-            ErrorUi ui = new ErrorUi(500, 500, e.getMessage());
+            ErrorUi ui = new ErrorUi(500, 250, e.getMessage());
             ui.setVisible(true);
         }
     }

@@ -42,7 +42,7 @@ public class MainUi extends JFrame implements ActionListener {
 
         //  setup buttons
         int buttonWidth = 150;
-        int buttonHeight = 40;
+        int buttonHeight = 35;
         //  encode
         buttonEncode = new JButton("Encode");
         buttonEncode.setFont(FontUtils.getBigButtonFont());
@@ -60,13 +60,13 @@ public class MainUi extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonEncode) {
-            EncodeUi ui = new EncodeUi(500, 770);
+            EncodeUi ui = new EncodeUi(500, 805);
             setVisible(false);
             ui.setVisible(true);
         }
 
         if (e.getSource() == buttonDecode) {
-            DecodeUi ui = new DecodeUi(500, 250);
+            DecodeUi ui = new DecodeUi(500, 290);
             setVisible(false);
             ui.setVisible(true);
         }

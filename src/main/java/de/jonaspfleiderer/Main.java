@@ -1,5 +1,6 @@
 package de.jonaspfleiderer;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import de.jonaspfleiderer.ui.ErrorUi;
 import de.jonaspfleiderer.ui.MainUi;
 import de.jonaspfleiderer.util.FontUtils;
@@ -14,6 +15,8 @@ public class Main {
     public static void main(String[] args) {
         ResourceManager.setup();
         FontUtils.setup();
+
+        FlatLightLaf.setup();
 
         if (isWindows) {
             parserName = "parser.exe";
