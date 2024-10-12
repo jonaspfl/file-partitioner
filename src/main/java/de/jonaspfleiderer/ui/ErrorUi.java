@@ -7,10 +7,10 @@ import java.awt.*;
 
 public class ErrorUi extends JFrame {
 
-    public ErrorUi(int width, int height, String errorMessage) {
+    public ErrorUi(int width, int height, String errorMessage, int closeOperation) {
         //  setup frame
         setTitle("FilePartitioner");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(closeOperation);
         setResizable(false);
 
         //  position frame centered

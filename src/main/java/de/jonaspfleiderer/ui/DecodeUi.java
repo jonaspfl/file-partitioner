@@ -103,6 +103,8 @@ public class DecodeUi extends JFrame implements ActionListener {
                 filePath = fileChooser.getSelectedFile().getAbsolutePath();
                 textInputFile.setText(filePath);
 
+                Main.getLogger().log("[DecodeUi] Input file set to '" + filePath + "'");
+
                 buttonStartDecode.setEnabled(true);
             }
         }

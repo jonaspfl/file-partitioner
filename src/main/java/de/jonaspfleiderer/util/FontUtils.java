@@ -1,5 +1,7 @@
 package de.jonaspfleiderer.util;
 
+import de.jonaspfleiderer.Main;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +12,11 @@ public class FontUtils {
 
     public static void setup() {
         try {
+            Main.getLogger().log("[FontUtils] Loading fonts...");
             defaultFont = Font.createFont(Font.TRUETYPE_FONT, ResourceManager.getDefaultFontResource().openStream());
             monoFont = Font.createFont(Font.TRUETYPE_FONT, ResourceManager.getMonoFontResource().openStream());
         } catch (FontFormatException | IOException e) {
+            Main.getLogger().logError("[FontUtils] Could not load fonts. Using default font.");
             defaultFont = new Font("Arial", Font.PLAIN, 20);
         }
     }

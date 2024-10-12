@@ -182,6 +182,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
                 if (listModel.contains(fileChooserIn.getSelectedFile().getAbsolutePath())) return;
                 for (File f : fileChooserIn.getSelectedFiles()) {
                     listModel.addElement(f.getAbsolutePath());
+                    Main.getLogger().log("[EncodeUi] Added file '" + f.getAbsolutePath() + "' to encode list.");
                 }
 
                 if (outputFilePath != null) {
@@ -192,6 +193,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
 
         if (e.getSource() == buttonRemoveSelected) {
             if (fileList.getSelectedValue() == null) return;
+            Main.getLogger().log("[EncodeUi] Removed file '" + fileList.getSelectedValue() + "' from encode list.");
             listModel.removeElement(fileList.getSelectedValue());
 
             if (listModel.isEmpty()) {
@@ -203,6 +205,8 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
             if (fileChooserOut.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 outputFilePath = fileChooserOut.getSelectedFile().getAbsolutePath();
                 textOutputFile.setText(outputFilePath);
+
+                Main.getLogger().log("[EncodeUi] Selected output file '" + outputFilePath + "'.");
 
                 if (!listModel.isEmpty()) {
                     buttonStartEncoding.setEnabled(true);
