@@ -85,7 +85,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
     }
 
     public void startParsing(String cmd) {
-        Main.getLogger().log("[Parser] Started with command: " + cmd);
+        Main.getLogger().log("[ParserUi] Started with command: " + cmd);
 
         Runnable runnable = () -> {
             final Runtime r = Runtime.getRuntime();
@@ -104,7 +104,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                 }
                 buttonClose.setEnabled(true);
             } catch (IOException | InterruptedException e) {
-                Main.getLogger().logError("[Parser] " + e.getMessage());
+                Main.getLogger().logError("[ParserUi] " + e.getMessage());
                 ErrorUi ui = new ErrorUi(500, 250, e.getMessage(), WindowConstants.HIDE_ON_CLOSE);
                 ui.setVisible(true);
             }
@@ -120,8 +120,9 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                     if ((line = stream.readLine()) == null) break;
                     textArea.append(line + "\n");
                     textArea.setCaretPosition(textArea.getDocument().getLength());
+                    Main.getLogger().log("[[Parser]] " + line);
                 } catch (IOException e) {
-                    Main.getLogger().logError("[Parser] " + e.getMessage());
+                    Main.getLogger().logError("[ParserUi] " + e.getMessage());
                     ErrorUi ui = new ErrorUi(500, 250, e.getMessage(), WindowConstants.HIDE_ON_CLOSE);
                     ui.setVisible(true);
                 }
@@ -135,13 +136,13 @@ public class ParserRunningUi extends JFrame implements ActionListener {
 
         File log = new File("parser.log");
         if (!log.exists()) {
-            Main.getLogger().logError("[Parser] Couldn't find parser log.");
+            Main.getLogger().logError("[ParserUi] Couldn't find parser log.");
             return;
         }
         File outputDirectory = new File("output");
         if (!outputDirectory.exists()) {
             if (!outputDirectory.mkdir()) {
-                Main.getLogger().logError("[Parser] Could not create output directory.");
+                Main.getLogger().logError("[ParserUi] Could not create output directory.");
                 return;
             }
         }
@@ -151,12 +152,12 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                 String fileName = sc.nextLine();
                 File file = new File(fileName);
                 if (!file.exists()) {
-                    Main.getLogger().logError("[Parser] File '" + fileName + "' contained in parser log not found.");
+                    Main.getLogger().logError("[ParserUi] File '" + fileName + "' contained in parser log not found.");
                     continue;
                 }
 
                 if (!file.renameTo(new File(outputDirectory, fileName))) {
-                    Main.getLogger().logError("[Parser] File '" + fileName + "' could not be moved to output directory.");
+                    Main.getLogger().logError("[ParserUi] File '" + fileName + "' could not be moved to output directory.");
                     moveFailed.add(fileName);
                 }
             }
@@ -168,7 +169,7 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                 ui.setVisible(true);
             }
         } catch (FileNotFoundException e) {
-            Main.getLogger().logError("[Parser] " + e.getMessage());
+            Main.getLogger().logError("[ParserUi] " + e.getMessage());
             ErrorUi ui = new ErrorUi(500, 250, e.getMessage(), WindowConstants.HIDE_ON_CLOSE);
             ui.setVisible(true);
         }
