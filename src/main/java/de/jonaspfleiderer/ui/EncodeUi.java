@@ -3,6 +3,7 @@ package de.jonaspfleiderer.ui;
 import de.jonaspfleiderer.Main;
 import de.jonaspfleiderer.util.ExtentionlessFileFilter;
 import de.jonaspfleiderer.util.FontUtils;
+import de.jonaspfleiderer.util.HashUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,12 +14,15 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EncodeUi extends JFrame implements ActionListener, ListSelectionListener, KeyListener {
     private final DefaultListModel<String> listModel;
@@ -29,7 +33,10 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
     private final JButton buttonRemoveSelected;
     private final JButton buttonStartEncoding;
     private final JButton buttonSelectOutput;
+    private final JButton buttonCopy;
+    private final JButton buttonClose;
     private final JTextField textFieldMaxSize;
+    private final JTextField textFieldFileHash;
     private final JComboBox<String> comboBoxUnit;
     private final JTextArea textOutputFile;
 
@@ -40,6 +47,9 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         setTitle("FilePartitioner");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+
+        int buttonWidth = 170;
+        int buttonHeight = 25;
 
         //  position frame centered
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -86,7 +96,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         listModel = new DefaultListModel<>();
         fileList = new JList<>(listModel);
         int fileListWidth = (int) (0.8 * width);
-        int fileListHeight = (int) (0.5 * height);
+        int fileListHeight = (int) (0.3 * height);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fileList.setFont(FontUtils.getSmallFont());
         fileList.setBounds(width / 2 - (fileListWidth / 2) - 5, 225, fileListWidth, fileListHeight);
@@ -94,6 +104,12 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         JScrollPane scrollPane = new JScrollPane(fileList);
         scrollPane.setBounds(fileList.getBounds());
         panel.add(scrollPane);
+
+        JLabel labelFileHash = new JLabel("Hash value representing the selected files:");
+        labelFileHash.setFont(FontUtils.getNormalFont());
+        labelFileHash.setBounds(5, 230 + fileListHeight + 30 + buttonHeight * 3 + 45, width - 10, 20);
+        labelFileHash.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(labelFileHash);
 
         //  setup textfield
         textFieldMaxSize = new JTextField();
@@ -104,6 +120,14 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         textFieldMaxSize.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         textFieldMaxSize.addKeyListener(this);
         panel.add(textFieldMaxSize);
+
+        textFieldFileHash = new JTextField();
+        textFieldFileHash.setBounds(5, labelFileHash.getY() + 25, width - 10 - 85, 25);
+        textFieldFileHash.setFont(FontUtils.getMonoSpaceFont().deriveFont(15f));
+        textFieldFileHash.setHorizontalAlignment(SwingConstants.CENTER);
+        textFieldFileHash.addKeyListener(this);
+        textFieldFileHash.setEditable(false);
+        panel.add(textFieldFileHash);
 
         //  setup combobox
         comboBoxUnit = new JComboBox<>();
@@ -133,8 +157,6 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
 
         //  setup add file button
         buttonAddFile = new JButton("Add File");
-        int buttonWidth = 170;
-        int buttonHeight = 25;
         buttonAddFile.setBounds(width / 2 - (buttonWidth / 2), 195, buttonWidth, buttonHeight);
         buttonAddFile.setFont(FontUtils.getNormalFont());
         buttonAddFile.addActionListener(this);
@@ -155,6 +177,13 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         buttonSelectOutput.addActionListener(this);
         panel.add(buttonSelectOutput);
 
+        buttonCopy = new JButton("Copy");
+        buttonCopy.setFont(FontUtils.getNormalFont());
+        buttonCopy.setBounds(width - 80, textFieldFileHash.getY(), 75, buttonHeight);
+        buttonCopy.setEnabled(false);
+        buttonCopy.addActionListener(this);
+        panel.add(buttonCopy);
+
         //  setup output file text
         textOutputFile = new JTextArea();
         textOutputFile.setFont(FontUtils.getNormalFont());
@@ -173,6 +202,12 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         buttonStartEncoding.setEnabled(false);
         buttonStartEncoding.addActionListener(this);
         panel.add(buttonStartEncoding);
+
+        buttonClose = new JButton("Close");
+        buttonClose.setFont(FontUtils.getNormalFont());
+        buttonClose.setBounds(width / 2 - (buttonWidth / 2), buttonCopy.getY() + 35, buttonWidth, buttonHeight);
+        buttonClose.addActionListener(this);
+        panel.add(buttonClose);
     }
 
     @Override
@@ -215,19 +250,50 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         }
 
         if (e.getSource() == buttonStartEncoding) {
-            int maxSize = textFieldMaxSize.getText().isEmpty() ? 0 : Integer.parseInt(textFieldMaxSize.getText());
-            String unit = maxSize == 0 ? "" : comboBoxUnit.getSelectedIndex() == 0 ? "K" :
-                            comboBoxUnit.getSelectedIndex() == 1 ? "M" : "G";
+            buttonStartEncoding.setEnabled(false);
 
-            StringBuilder cmd = new StringBuilder("./" + Main.getParserName() + " encode " + maxSize + unit + " \"" + outputFilePath + "\"");
-            for (int i = 0; i < listModel.getSize(); i++) {
-                cmd.append(" \"").append(listModel.getElementAt(i)).append("\"");
-            }
+            new Thread(() -> {
+                int maxSize = textFieldMaxSize.getText().isEmpty() ? 0 : Integer.parseInt(textFieldMaxSize.getText());
+                String unit = maxSize == 0 ? "" : comboBoxUnit.getSelectedIndex() == 0 ? "K" :
+                        comboBoxUnit.getSelectedIndex() == 1 ? "M" : "G";
 
-            ParserRunningUi parser = new ParserRunningUi(500, 500, this, false);
-            setVisible(false);
-            parser.setVisible(true);
-            parser.startParsing(cmd.toString());
+                int cmdLength = listModel.getSize() + 4;
+                String[] cmd = new String[cmdLength];
+                cmd[0] = "./" + Main.getParserName();
+                cmd[1] = "encode";
+                cmd[2] = maxSize + unit;
+                cmd[3] = outputFilePath;
+
+                buttonStartEncoding.setText("hashing...");
+
+                List<String> files = new ArrayList<>();
+                for (int i = 0; i < listModel.getSize(); i++) {
+                    cmd[4 + i] = listModel.getElementAt(i);
+                    files.add(listModel.getElementAt(i));
+                }
+
+                textFieldFileHash.setText(HashUtils.getMD5FilesHash(files));
+                buttonCopy.setEnabled(true);
+
+                buttonStartEncoding.setText("encoding...");
+
+                ParserRunningUi parser = new ParserRunningUi(500, 500, this, false);
+                setVisible(false);
+                parser.setVisible(true);
+                parser.startParsing(cmd);
+
+                buttonStartEncoding.setEnabled(true);
+                buttonStartEncoding.setText("Start Encoding");
+            }).start();
+        }
+
+        if (e.getSource() == buttonCopy) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(textFieldFileHash.getText()), null);
+        }
+
+        if (e.getSource() == buttonClose) {
+            System.exit(0);
         }
     }
 

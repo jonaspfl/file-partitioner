@@ -60,13 +60,13 @@ public class MainUi extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonEncode) {
-            EncodeUi ui = new EncodeUi(500, 805);
+            EncodeUi ui = new EncodeUi(500, 720);
             setVisible(false);
             ui.setVisible(true);
         }
 
         if (e.getSource() == buttonDecode) {
-            DecodeUi ui = new DecodeUi(500, 290);
+            DecodeUi ui = new DecodeUi(500, 320);
             setVisible(false);
             ui.setVisible(true);
         }

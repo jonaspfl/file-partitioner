@@ -16,6 +16,7 @@ import java.io.File;
 public class DecodeUi extends JFrame implements ActionListener {
     private final JButton buttonSelectFile;
     private final JButton buttonStartDecode;
+    private final JButton buttonClose;
     private final JFileChooser fileChooser;
     private final JTextArea textInputFile;
     private String filePath;
@@ -76,6 +77,12 @@ public class DecodeUi extends JFrame implements ActionListener {
         buttonStartDecode.setEnabled(false);
         panel.add(buttonStartDecode);
 
+        buttonClose = new JButton("Close");
+        buttonClose.setFont(FontUtils.getNormalFont());
+        buttonClose.setBounds(width / 2 - buttonWidth / 2, 250, buttonWidth, buttonHeight);
+        buttonClose.addActionListener(this);
+        panel.add(buttonClose);
+
         //  setup file label
         textInputFile = new JTextArea();
         textInputFile.setFont(FontUtils.getNormalFont());
@@ -112,12 +119,16 @@ public class DecodeUi extends JFrame implements ActionListener {
         if (e.getSource() == buttonStartDecode) {
             if (filePath == null) return;
 
-            String cmd = "./" + Main.getParserName() + " decode " + filePath;
+            String[] cmd = {"./" + Main.getParserName(), "decode", filePath};
 
             ParserRunningUi parser = new ParserRunningUi(500, 500, this, true);
             setVisible(false);
             parser.setVisible(true);
             parser.startParsing(cmd);
+        }
+
+        if (e.getSource() == buttonClose) {
+            System.exit(0);
         }
     }
 }

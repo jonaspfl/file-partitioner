@@ -8,7 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,12 +24,16 @@ public class ParserRunningUi extends JFrame implements ActionListener {
     private final JButton buttonClose;
     private final JButton buttonFontBigger;
     private final JButton buttonFontSmaller;
+    private final JButton buttonValidate;
     private final JFrame parent;
     private final boolean decode;
+    private final List<String> decodedFiles;
 
     public ParserRunningUi(int width, int height, JFrame parent, boolean decode) {
         this.parent = parent;
         this.decode = decode;
+
+        decodedFiles = new ArrayList<>();
 
         //  setup frame
         setTitle("FilePartitioner");
@@ -63,6 +73,13 @@ public class ParserRunningUi extends JFrame implements ActionListener {
         buttonFontBigger.addActionListener(this);
         panel.add(buttonFontBigger);
 
+        buttonValidate = new JButton("Validate");
+        buttonValidate.setBounds(width - 120, height - 75, 100, 30);
+        buttonValidate.setFont(FontUtils.getNormalFont());
+        buttonValidate.addActionListener(this);
+        buttonValidate.setEnabled(false);
+        if (decode) panel.add(buttonValidate);
+
         //  setup textarea
         textArea = new JTextArea();
         textArea.setEditable(false);
@@ -84,8 +101,8 @@ public class ParserRunningUi extends JFrame implements ActionListener {
         panel.add(buttonClose);
     }
 
-    public void startParsing(String cmd) {
-        Main.getLogger().log("[ParserUi] Started with command: " + cmd);
+    public void startParsing(String[] cmd) {
+        Main.getLogger().log("[ParserUi] Started with command: " + Arrays.toString(cmd));
 
         Runnable runnable = () -> {
             final Runtime r = Runtime.getRuntime();
@@ -159,6 +176,8 @@ public class ParserRunningUi extends JFrame implements ActionListener {
                 if (!file.renameTo(new File(outputDirectory, fileName))) {
                     Main.getLogger().logError("[ParserUi] File '" + fileName + "' could not be moved to output directory.");
                     moveFailed.add(fileName);
+                } else {
+                    decodedFiles.add(outputDirectory + "/" + fileName);
                 }
             }
 
@@ -167,6 +186,8 @@ public class ParserRunningUi extends JFrame implements ActionListener {
             if (!moveFailed.isEmpty()) {
                 ErrorUi ui = new ErrorUi(500, 250, "Error moving files: " + moveFailed, WindowConstants.HIDE_ON_CLOSE);
                 ui.setVisible(true);
+            } else {
+                buttonValidate.setEnabled(true);
             }
         } catch (FileNotFoundException e) {
             Main.getLogger().logError("[ParserUi] " + e.getMessage());
@@ -180,8 +201,8 @@ public class ParserRunningUi extends JFrame implements ActionListener {
         if (e.getSource() == buttonClose) {
             if (parent == null) System.exit(0);
 
-            setVisible(false);
             parent.setVisible(true);
+            dispose();
         }
 
         if (e.getSource() == buttonFontSmaller) {
@@ -194,6 +215,12 @@ public class ParserRunningUi extends JFrame implements ActionListener {
             Font f = textArea.getFont();
             if (f.getSize() == 50) return;
             textArea.setFont(f.deriveFont((float) f.getSize() + 1));
+        }
+
+        if (e.getSource() == buttonValidate) {
+            ValidateFilesUi ui = new ValidateFilesUi(500, 380, this, decodedFiles);
+            ui.setVisible(true);
+            setVisible(false);
         }
     }
 }
