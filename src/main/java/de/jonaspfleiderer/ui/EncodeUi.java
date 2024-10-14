@@ -8,8 +8,6 @@ import de.jonaspfleiderer.util.HashUtils;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -105,7 +103,7 @@ public class EncodeUi extends JFrame implements ActionListener, ListSelectionLis
         scrollPane.setBounds(fileList.getBounds());
         panel.add(scrollPane);
 
-        JLabel labelFileHash = new JLabel("Hash value representing the selected files:");
+        JLabel labelFileHash = new JLabel("MD5 hash-value representing the encoded files:");
         labelFileHash.setFont(FontUtils.getNormalFont());
         labelFileHash.setBounds(5, 230 + fileListHeight + 30 + buttonHeight * 3 + 45, width - 10, 20);
         labelFileHash.setHorizontalAlignment(SwingConstants.CENTER);

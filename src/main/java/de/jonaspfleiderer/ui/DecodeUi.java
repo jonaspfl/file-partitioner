@@ -11,7 +11,6 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class DecodeUi extends JFrame implements ActionListener {
     private final JButton buttonSelectFile;
@@ -57,7 +56,7 @@ public class DecodeUi extends JFrame implements ActionListener {
         StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER);
         textPane.setEditable(false);
         textPane.setBackground(getBackground());
-        textPane.setText("Select the file you want to decode. Only select the parser file, not the '_data' files! All original files will be decoded exactly like they were encoded before.");
+        textPane.setText("Select the file you want to decode. Only select the main file, not the '_data' files! All original files will be decoded exactly like they were encoded before.");
         documentStyle.setParagraphAttributes(0, documentStyle.getLength(), centerAttribute, false);
         panel.add(textPane);
 

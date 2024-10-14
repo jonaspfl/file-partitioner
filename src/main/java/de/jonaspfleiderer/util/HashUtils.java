@@ -1,7 +1,6 @@
 package de.jonaspfleiderer.util;
 
 import de.jonaspfleiderer.Main;
-import de.jonaspfleiderer.ui.ErrorUi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +55,9 @@ public class HashUtils {
         for (String fileName : files) {
             hashes.append(getMD5FileHash(fileName));
         }
-        return getMd5Hash(hashes.toString());
+        String hash = getMd5Hash(hashes.toString());
+        Main.getLogger().log("[HashUtils] Resulting hash: " + hash);
+        return hash;
     }
 
     private static String bytesToHexString(byte[] bytes) {

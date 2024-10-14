@@ -15,12 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class ValidateFilesUi extends JFrame implements ActionListener, KeyListener {
@@ -114,7 +108,7 @@ public class ValidateFilesUi extends JFrame implements ActionListener, KeyListen
         labelPastedHash.setBounds(5, 128, width - 10, 20);
         panel.add(labelPastedHash);
 
-        JLabel labelGeneratedHash = new JLabel("Generated hash:");
+        JLabel labelGeneratedHash = new JLabel("Generated MD5 hash:");
         labelGeneratedHash.setFont(FontUtils.getNormalFont());
         labelGeneratedHash.setBounds(5, 178, width - 10, 20);
         panel.add(labelGeneratedHash);
